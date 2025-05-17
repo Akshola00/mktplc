@@ -5,7 +5,7 @@ pub enum ProductSize {
     LARGE,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Category {
     CLOTHING,
     EDIBLE,

@@ -1,6 +1,7 @@
 use chrono::Local;
 
 use super::{product_enums::Category, product_struct::Product};
+use super::product_validate::Validate;
 
 pub trait Manage {
     // Inventory operations
@@ -10,24 +11,14 @@ pub trait Manage {
 
     // Pricing operations
     fn apply_discount(&mut self, percentage: f64) -> Result<f64, String>;
-    fn restore_original_price(&mut self) -> Result<f64, String>;
-
-    // Status operations
-    fn activate(&mut self) -> Result<(), String>;
-    fn deactivate(&mut self) -> Result<(), String>;
-    fn archive(&mut self) -> Result<(), String>;
-    fn unarchive(&mut self) -> Result<(), String>;
+    fn remove_discount(&mut self) -> Result<(), String>;
 
     // Tag operations
     fn add_tag(&mut self, tag: String) -> Result<Vec<String>, String>;
-    fn remove_tag(&mut self, tag: &str) -> Result<Vec<String>, String>;
-
-    // Display and formatting
-    fn display_summary(&self) -> String;
-    fn format_for_catalog(&self) -> String;
+    fn remove_tag(&mut self, tag: String) -> Result<Vec<String>, String>;
 
     // Search/filtering helpers
-    fn matches_search(&self, query: &str) -> bool;
+    fn matches_search(&self, query: String) -> bool;
     fn is_in_category(&self, category: &Category) -> bool;
     fn is_in_price_range(&self, min: f64, max: f64) -> bool;
 }
@@ -35,11 +26,13 @@ pub trait Manage {
 impl Manage for Product {
     fn increase_quantity(&mut self, amount: u64) -> Result<u64, String> {
         self.amount_in_stock += amount;
+        self.updated_at = Local::now();
         Ok(self.amount_in_stock)
     }
 
     fn decrease_quantity(&mut self, amount: u64) -> Result<u64, String> {
         self.amount_in_stock -= amount;
+        self.updated_at = Local::now();
         Ok(self.amount_in_stock)
     }
 
@@ -48,7 +41,6 @@ impl Manage for Product {
     }
 
     fn apply_discount(&mut self, percentage: f64) -> Result<f64, String> {
-        // Discount Percentage = [(Original Price - Sale Price) / Original Price] * 100.
         if percentage >= 99.99 || percentage == 1.0 {
             return Err("Percentage must be between 100 and 0".to_owned());
         }
@@ -60,51 +52,49 @@ impl Manage for Product {
         Ok(discount)
     }
 
-    fn restore_original_price(&mut self) -> Result<f64, String> {
-        todo!()
-    }
-
-    fn activate(&mut self) -> Result<(), String> {
-        todo!()
-    }
-
-    fn deactivate(&mut self) -> Result<(), String> {
-        todo!()
-    }
-
-    fn archive(&mut self) -> Result<(), String> {
-        todo!()
-    }
-
-    fn unarchive(&mut self) -> Result<(), String> {
-        todo!()
+    fn remove_discount(&mut self) -> Result<(), String> {
+        if self.discount_percentage == 0.0 {return Err("No discount to remove".to_owned())};
+        self.discount_price = None;
+        self.discount_percentage = 0.0;
+        Ok(())
     }
 
     fn add_tag(&mut self, tag: String) -> Result<Vec<String>, String> {
+        let unique_tags = self.validate_tags(vec![tag])?;
+        for tags in unique_tags {
+            self.tags.push(tags);
+        }
         todo!()
     }
 
-    fn remove_tag(&mut self, tag: &str) -> Result<Vec<String>, String> {
-        todo!()
+    fn remove_tag(&mut self, tag: String) -> Result<Vec<String>, String> {
+        let position = self.tags.iter().position(|x| *x == tag);
+        
+        match position {
+            Some(index) => {
+                self.tags.remove(index);
+                Ok(self.tags.clone())
+            },
+            None => Err("Tag not found".to_string())
+        }
     }
 
-    fn display_summary(&self) -> String {
-        todo!()
-    }
-
-    fn format_for_catalog(&self) -> String {
-        todo!()
-    }
-
-    fn matches_search(&self, query: &str) -> bool {
-        todo!()
+    fn matches_search(&self, query: String) -> bool {
+        let query = query.to_lowercase();
+        self.name.to_lowercase().contains(&query) || 
+        self.description.to_lowercase().contains(&query) ||
+        self.tags.iter().any(|tag| tag.to_lowercase().contains(&query))
     }
 
     fn is_in_category(&self, category: &Category) -> bool {
-        todo!()
+        let cat = self.category;
+        cat == *category
     }
 
     fn is_in_price_range(&self, min: f64, max: f64) -> bool {
-        todo!()
+        match self.discount_price {
+            Some(discounted) => discounted >= min && discounted <= max,
+            None => self.original_price >= min && self.original_price <= max
+        }
     }
 }

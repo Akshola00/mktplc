@@ -1,6 +1,6 @@
 use super::{product_enums::Category, product_struct::Product};
 
-trait Validate {
+pub trait Validate {
     fn validate(&self) -> Result<(), String>;
     fn validate_string(input: String) -> Result<(), String>;
     fn validate_tags(&mut self, tags: Vec<String>) -> Result<Vec<String>, String>;
@@ -27,7 +27,7 @@ impl Validate for Product {
         let existing_tags = &self.tags;
         if let Some(invalid_tag) = tags.iter().find(|tag| tag.len() > 20) {
             return Err(format!(
-                "Invalid tag '{}', atag length cannot be more than 20",
+                "Invalid tag '{}', a tag length cannot be more than 20",
                 invalid_tag
             ));
         }
