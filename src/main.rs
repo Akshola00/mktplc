@@ -1,15 +1,25 @@
 mod products;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
+use std::path::Path;
 
-
+use database::Database_for_people;
 use person::person_enum::PersonType;
 use person::person_struct::Person;
 use person::product_person::ProductPersonImpl;
 use products::product_enums::*;
 use products::{product_getters::Getters, product_management::Manage};
 use products::product_struct::Product;
-
+use uuid::Uuid;
 mod person;
+
+mod database;
+
+
 fn main() {
+
+    let database_instance = Database_for_people::new();
+
     let mut new_shoe = Product::new_product(
         "Shoes".to_owned(),
         "comfortable jogger shoes".to_owned(),
@@ -32,5 +42,20 @@ fn main() {
     new_person.create_product(new_shoe);
     println!("The newly created person with a new product is {} ", new_person.person_summary());
     
-    
 }
+
+// fn read_a_persons_data_from_file (path: &str, persons_id: Uuid) {
+//     let persons_data: Person;
+//     if Path::new(path).exists() {
+//         let file = File::open(path)?;
+//         for line in BufReader::new(file).lines() {
+//             let l = line?;
+//             let parts: Vec<&str> = l.split('|').collect();
+//             if parts.len() == 5 {
+              
+//             }
+//         }
+//         // Ok(persons_data)
+//     }
+
+// }

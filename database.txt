@@ -1,0 +1,21 @@
+=== PERSONS ===
+ID|Name|Email|Phone|Address|Type(Buyer/Seller)
+P001|John Doe|john@email.com|1234567890|123 Main St|Buyer
+P002|Jane Smith|jane@email.com|0987654321|456 Oak Ave|Seller
+
+=== PRODUCTS ===
+ID|Name|Description|Price|SellerID|Status
+PR001|Laptop|Dell XPS 13|999.99|P002|Available
+PR002|Phone|iPhone 12|699.99|P002|Sold
+
+=== BUYERS ===
+BuyerID|TotalPurchases|Rating
+P001|5|4.5
+
+=== SELLERS ===
+SellerID|TotalSales|Rating
+P002|12|4.8
+
+=== TRANSACTIONS ===
+ID|Date|ProductID|BuyerID|SellerID|Amount
+T001|2023-05-20|PR002|P001|P002|699.99

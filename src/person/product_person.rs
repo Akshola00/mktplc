@@ -6,7 +6,7 @@ use super::person_struct::Person;
 
 pub trait ProductPersonImpl {
     fn create_product(&mut self, product: Product) -> Result<(), String>;
-    fn buy_a_product(&mut self, product: Product) -> Result<(), String>;
+    fn buy_a_product(&mut self, seller: Uuid, product: Product) -> Result<(), String>;
     fn view_products(&self) -> Option<Vec<Product>>;
     fn update_product(&mut self, product_id: Uuid, product: Product) -> Result<(), String>;
     fn delete_product(&mut self, product_id: Uuid) -> Result<(), String>;
@@ -19,8 +19,8 @@ impl ProductPersonImpl for Person {
         Ok(())
     }
 
-    fn buy_a_product(&mut self, product: Product) -> Result<(), String> {
-        //  validate product buy
+    fn buy_a_product(&mut self, seller: Uuid, product: Product) -> Result<(), String> {
+        
         Ok(())
     }
 
