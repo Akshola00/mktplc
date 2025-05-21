@@ -1,7 +1,7 @@
 use chrono::Local;
 
-use super::{product_enums::Category, product_struct::Product};
 use super::product_validate::Validate;
+use super::{product_enums::Category, product_struct::Product};
 
 pub trait Manage {
     // Inventory operations
@@ -53,7 +53,9 @@ impl Manage for Product {
     }
 
     fn remove_discount(&mut self) -> Result<(), String> {
-        if self.discount_percentage == 0.0 {return Err("No discount to remove".to_owned())};
+        if self.discount_percentage == 0.0 {
+            return Err("No discount to remove".to_owned());
+        };
         self.discount_price = None;
         self.discount_percentage = 0.0;
         Ok(())
@@ -69,21 +71,24 @@ impl Manage for Product {
 
     fn remove_tag(&mut self, tag: String) -> Result<Vec<String>, String> {
         let position = self.tags.iter().position(|x| *x == tag);
-        
+
         match position {
             Some(index) => {
                 self.tags.remove(index);
                 Ok(self.tags.clone())
-            },
-            None => Err("Tag not found".to_string())
+            }
+            None => Err("Tag not found".to_string()),
         }
     }
 
     fn matches_search(&self, query: String) -> bool {
         let query = query.to_lowercase();
-        self.name.to_lowercase().contains(&query) || 
-        self.description.to_lowercase().contains(&query) ||
-        self.tags.iter().any(|tag| tag.to_lowercase().contains(&query))
+        self.name.to_lowercase().contains(&query)
+            || self.description.to_lowercase().contains(&query)
+            || self
+                .tags
+                .iter()
+                .any(|tag| tag.to_lowercase().contains(&query))
     }
 
     fn is_in_category(&self, category: &Category) -> bool {
@@ -94,7 +99,7 @@ impl Manage for Product {
     fn is_in_price_range(&self, min: f64, max: f64) -> bool {
         match self.discount_price {
             Some(discounted) => discounted >= min && discounted <= max,
-            None => self.original_price >= min && self.original_price <= max
+            None => self.original_price >= min && self.original_price <= max,
         }
     }
 }
