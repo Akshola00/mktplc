@@ -79,6 +79,11 @@ impl Validate for Product {
                 }
             }
             Category::OTHERS => return Ok(()),
+            Category::ACCESSORIES => {
+                if price < 5000.0 {
+                    return Err("Price of Automobile must be greater than 5000".to_owned());
+                }
+            }
         }
 
         Ok(())

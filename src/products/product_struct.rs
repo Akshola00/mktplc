@@ -2,7 +2,7 @@ use crate::products::product_enums::{Category, ProductSize};
 use chrono::prelude::*;
 use uuid::Uuid;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct Product {
     pub product_id: Uuid,
     pub name: String,

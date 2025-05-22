@@ -1,4 +1,4 @@
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub enum ProductSize {
     SMALL,
     MEDIUM,
@@ -12,4 +12,5 @@ pub enum Category {
     SHOES,
     AUTOMOBILE,
     OTHERS,
+    ACCESSORIES,
 }

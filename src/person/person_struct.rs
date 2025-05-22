@@ -1,6 +1,6 @@
 use uuid::Uuid;
 
-use crate::{database::Database_for_people, products::product_struct::Product};
+use crate::products::product_struct::Product;
 
 use super::person_enum::{PersonStatus, PersonType};
 
@@ -10,17 +10,14 @@ pub struct Person {
     pub name: String,
     pub role: PersonType,
     pub products_selling: Vec<Product>,
-    pub buys: Vec<Uuid>,
+    pub buys: Vec<Product>,
     pub balance: f64,
     pub status: PersonStatus,
-    pub dummy_money: f64,
 }
 
 impl Person {
     pub fn new(name: String, role: PersonType) -> Self {
-        let person_id = Uuid::new_v4();
-
-        let person_Struct = Person {
+        Person {
             id: Uuid::new_v4(),
             name: name,
             role: role,
@@ -28,23 +25,13 @@ impl Person {
             buys: vec![],
             balance: 10000.0,
             status: PersonStatus::ACTIVE,
-            dummy_money: 200.0,
-        };
-
-        person_Struct
-
-
+        }
     }
 
     pub fn person_summary(&self) -> String {
         format!(
-            "The person {}
-         has an id of {} and, Status {:?}. 
-         On This Market place he 
-         is a {:?}, All products/buys {:#?}",
-            self.name, self.id, self.status, self.role, self.products_selling
+            "ID: {}\nName: {}\nRole: {:?}\nStatus: {:?}\nBalance: {}\n",
+            self.id, self.name, self.role, self.status, self.balance
         )
     }
-
-
 }
