@@ -5,18 +5,19 @@ use crate::products::product_struct::Product;
 use super::person_struct::Person;
 
 pub trait ProductPersonImpl {
-    fn create_product(&mut self, product: Product) -> Result<(), String>;
+    fn create_product(&mut self, product: &Product) -> Result<(), String>;
     fn buy_a_product(&mut self, seller: &mut Person, product: Product) -> Result<(), String>;
     fn view_products(&self) -> Option<Vec<Product>>;
     fn update_product(&mut self, product_id: Uuid, product: Product) -> Result<(), String>;
     fn delete_product(&mut self, product_id: Uuid) -> Result<(), String>;
     fn get_product_by_id(&self, product_id: Uuid) -> Option<Product>;
+    fn get_bought_products(&self) -> Option<Vec<Product>>;
 }
 
 impl ProductPersonImpl for Person {
-    fn create_product(&mut self, product: Product) -> Result<(), String> {
-        self.products_selling.push(product);
-        Ok(())
+    fn create_product(&mut self, product: &Product) -> Result<(), String> {
+        self.products_selling.push(product.clone());
+        Ok(())  
     }
 
     fn buy_a_product(&mut self, seller: &mut Person, product: Product) -> Result<(), String> {
@@ -95,5 +96,9 @@ impl ProductPersonImpl for Person {
             .iter()
             .find(|p| p.product_id == product_id)
             .cloned()
+    }
+    
+    fn get_bought_products(&self) -> Option<Vec<Product>> {
+        Some(self.buys.clone())
     }
 }
